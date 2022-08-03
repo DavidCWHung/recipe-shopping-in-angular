@@ -6,7 +6,7 @@ import { Subject } from "rxjs";
 import { Ingredient } from "../shared/ingredient.model";
 import { Recipe } from "./recipe.model";
 import * as ShoppingListActions from '../shopping-list/store/shopping-list.actions';
-import * as fromShoppingList from '../shopping-list/store/shopping-list.reducer';
+import * as fromApp from '../store/app.reducer';
 
 @Injectable()
 export class RecipeService {
@@ -32,7 +32,7 @@ export class RecipeService {
     private recipes: Recipe[] = []; 
 
     constructor(private router: Router,
-                private store: Store<fromShoppingList.AppState>) {} // even though you don't select from the store, should provide what inside the store as a good practice <>
+                private store: Store<fromApp.AppState>) {} // even though you don't select from the store, should provide what inside the store as a good practice <>
 
     getRecipes() {
         return this.recipes.slice();
