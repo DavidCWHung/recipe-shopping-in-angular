@@ -1,9 +1,12 @@
 import { EventEmitter, Injectable } from "@angular/core";
 import { Router } from "@angular/router";
+import { Store } from "@ngrx/store";
 import { Subject } from "rxjs";
+
 import { Ingredient } from "../shared/ingredient.model";
-import { ShoppingListService } from "../shopping-list/shopping-list.service";
 import { Recipe } from "./recipe.model";
+import * as ShoppingListActions from '../shopping-list/store/shopping-list.actions';
+import * as fromShoppingList from '../shopping-list/store/shopping-list.reducer';
 
 @Injectable()
 export class RecipeService {
@@ -28,8 +31,8 @@ export class RecipeService {
 
     private recipes: Recipe[] = []; 
 
-    constructor(private shoppingListService: ShoppingListService,
-                private router: Router) {}
+    constructor(private router: Router,
+                private store: Store<fromShoppingList.AppState>) {} // even though you don't select from the store, should provide what inside the store as a good practice <>
 
     getRecipes() {
         return this.recipes.slice();
@@ -40,7 +43,8 @@ export class RecipeService {
     }
 
     addIngredientsToShoppingList(ingredients: Ingredient[]) {
-        this.shoppingListService.addIngredientsFromRecipe(ingredients);
+        this.store.dispatch(new ShoppingListActions.AddIngredients(ingredients));
+        // this.shoppingListService.addIngredientsFromRecipe(ingredients);
     }
 
     addRecipe(recipe: Recipe) {
