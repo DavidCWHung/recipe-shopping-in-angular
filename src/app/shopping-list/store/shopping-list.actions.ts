@@ -1,12 +1,13 @@
 import { Action } from "@ngrx/store";
 import { Ingredient } from "src/app/shared/ingredient.model";
 
-export const ADD_INGREDIENT = 'ADD_INGREDIENT'; // To prevent typos, convention to have the same name, uppercase + meaningful 
-export const ADD_INGREDIENTS = 'ADD_INGREDIENTS';
-export const UPDATE_INGREDIENT = 'UPDATE_INGREDIENT';
-export const DELETE_INGREDIENT = 'DELETE_INGREDIENT';
-export const START_EDIT = 'START_EDIT';
-export const STOP_EDIT = 'STOP_EDIT';
+// To prevent typos, convention to have the same name, uppercase + meaningful or use prefixing convention for uniqueness
+export const ADD_INGREDIENT = '[Shopping List] Add Ingredient';
+export const ADD_INGREDIENTS = '[Shopping List] Add Ingredients';
+export const UPDATE_INGREDIENT = '[Shopping List] Update Ingredient';
+export const DELETE_INGREDIENT = '[Shopping List] Delete Ingredient';
+export const START_EDIT = '[Shopping List] Start Edit';
+export const STOP_EDIT = '[Shopping List] Stop Edit';
 
 export class AddIngredient implements Action {
     readonly type = ADD_INGREDIENT;
@@ -40,10 +41,10 @@ export class StopEdit implements Action {
     readonly type = STOP_EDIT;
 }
 
-export type ShoppingListActions = 
-    AddIngredient | 
-    AddIngredients | 
-    UpdateIngredient | 
-    DeleteIngredient | 
-    StartEdit | 
+export type ShoppingListActions =
+    AddIngredient |
+    AddIngredients |
+    UpdateIngredient |
+    DeleteIngredient |
+    StartEdit |
     StopEdit;
