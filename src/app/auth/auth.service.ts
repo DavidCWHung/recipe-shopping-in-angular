@@ -26,45 +26,45 @@ export class AuthService {
     private router: Router,
     private store: Store<fromApp.AppState>) { }
 
-  signup(email: string, password: string) {
-    return this.http.post<AuthResponseData>('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + environment.firebaseAPIKey,
-      {
-        email: email,
-        password: password,
-        returnSecureToken: true
-      }
-    ).pipe(
-      catchError(errorRes =>
-        this.handleError(errorRes)
-      ),
-      tap(resData => {
-        this.handleAuthentication(
-          resData.email,
-          resData.localId,
-          resData.idToken,
-          +resData.expiresIn);
-      })
-    );
-  }
+  // signup(email: string, password: string) {
+  //   return this.http.post<AuthResponseData>('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + environment.firebaseAPIKey,
+  //     {
+  //       email: email,
+  //       password: password,
+  //       returnSecureToken: true
+  //     }
+  //   ).pipe(
+  //     catchError(errorRes =>
+  //       this.handleError(errorRes)
+  //     ),
+  //     tap(resData => {
+  //       this.handleAuthentication(
+  //         resData.email,
+  //         resData.localId,
+  //         resData.idToken,
+  //         +resData.expiresIn);
+  //     })
+  //   );
+  // }
 
-  login(email: string, password: string) {
-    return this.http.post<AuthResponseData>('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=' + environment.firebaseAPIKey,
-      {
-        email: email,
-        password: password,
-        returnSecureToken: true
-      }
-    ).pipe(
-      catchError(this.handleError),
-      tap(resData => {
-        this.handleAuthentication(
-          resData.email,
-          resData.localId,
-          resData.idToken,
-          +resData.expiresIn);
-      })
-    );
-  }
+  // login(email: string, password: string) {
+  //   return this.http.post<AuthResponseData>('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=' + environment.firebaseAPIKey,
+  //     {
+  //       email: email,
+  //       password: password,
+  //       returnSecureToken: true
+  //     }
+  //   ).pipe(
+  //     catchError(this.handleError),
+  //     tap(resData => {
+  //       this.handleAuthentication(
+  //         resData.email,
+  //         resData.localId,
+  //         resData.idToken,
+  //         +resData.expiresIn);
+  //     })
+  //   );
+  // }
 
   autoLogin() {
     // retrieve data from local storage
@@ -89,7 +89,7 @@ export class AuthService {
     if (loadedUser.token) {
       // this.user.next(loadedUser);
       this.store.dispatch(
-        new AuthActions.Login({
+        new AuthActions.AuthenticateSuccess({
           email: loadedUser.email, userId: loadedUser.id,
           token: loadedUser.token,
           expirationDate: new Date(userData._tokenExpirationDate)
@@ -133,7 +133,7 @@ export class AuthService {
 
     // alert the app there is a value or state change of user
     // this.user.next(user);
-    this.store.dispatch(new AuthActions.Login({
+    this.store.dispatch(new AuthActions.AuthenticateSuccess({
       email: email,
       userId: localId,
       token: idToken,

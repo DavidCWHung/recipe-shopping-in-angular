@@ -16,8 +16,68 @@ export interface AuthResponseData {
   registered?: boolean
 }
 
+const handleAuthentication = (email: string, userId: string, token: string, expiresIn: number) => {
+  const expirationDate = new Date(new Date().getTime() + expiresIn * 1000);
+
+  // ~dispatch new action <= auto subscribe by @Effect
+  return new AuthActions.AuthenticateSuccess({
+    email: email,
+    userId: userId,
+    token: token,
+    expirationDate: expirationDate
+  });
+};
+
+const handleError = (errorRes) => {
+  let errorMessage = 'An unknown error occurred!';
+  if (!errorRes.error || !errorRes.error.error) {
+    return of(new AuthActions.AuthenticateFail(errorMessage));
+  }
+
+  if (errorRes.error.error.message.startsWith('TOO_MANY_ATTEMPTS_TRY_LATER')) {
+    errorMessage = 'Too many attempts, try later';
+  }
+
+  switch (errorRes.error.error.message) {
+    case 'EMAIL_EXISTS':
+      errorMessage = 'This email exists already';
+      break;
+    case 'EMAIL_NOT_FOUND':
+      errorMessage = 'This email does not exist';
+      break;
+    case 'INVALID_PASSWORD':
+      errorMessage = 'This password is not correct';
+      break;
+
+    case 'USER_DISABLED':
+      errorMessage = 'Account disabled';
+  }
+
+  // need to return of() to wrap it as observable since unlike map, catchError don't wrap it as an observable automatically
+  return of(new AuthActions.AuthenticateFail(errorMessage));
+};
+
 @Injectable()
 export class AuthEffects {
+  @Effect()
+  authSignup = this.actions$.pipe(
+    ofType(AuthActions.SIGNUP_START),
+    switchMap((signupAction: AuthActions.SignupStart) => {
+      return this.http.post<AuthResponseData>('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=' + environment.firebaseAPIKey,
+        {
+          email: signupAction.payload.email,
+          password: signupAction.payload.password,
+          returnSecureToken: true
+        }
+      ).pipe(
+        map(resData => {
+          return handleAuthentication(resData.email, resData.localId, resData.idToken, +resData.expiresIn);
+        }),
+        catchError(errorRes => {
+          return handleError(errorRes);
+        }));
+    })
+  )
 
   @Effect()
   authLogin = this.actions$.pipe(
@@ -31,43 +91,10 @@ export class AuthEffects {
         }
       ).pipe(
         map(resData => {
-          const expirationDate = new Date(new Date().getTime() + +resData.expiresIn * 1000);
-
-          // ~dispatch new action <= auto subscribe by @Effect
-          return new AuthActions.Login({
-            email: resData.email,
-            userId: resData.localId,
-            token: resData.idToken,
-            expirationDate: expirationDate
-          });
+          return handleAuthentication(resData.email, resData.localId, resData.idToken, +resData.expiresIn);
         }),
         catchError(errorRes => {
-          let errorMessage = 'An unknown error occurred!';
-          if (!errorRes.error || !errorRes.error.error) {
-            return of(new AuthActions.LoginFail(errorMessage));
-          }
-
-          if (errorRes.error.error.message.startsWith('TOO_MANY_ATTEMPTS_TRY_LATER')) {
-            errorMessage = 'Too many attempts, try later';
-          }
-
-          switch (errorRes.error.error.message) {
-            case 'EMAIL_EXISTS':
-              errorMessage = 'This email exists already';
-              break;
-            case 'EMAIL_NOT_FOUND':
-              errorMessage = 'This email does not exist';
-              break;
-            case 'INVALID_PASSWORD':
-              errorMessage = 'This password is not correct';
-              break;
-
-            case 'USER_DISABLED':
-              errorMessage = 'Account disabled';
-          }
-
-          // need to return of() to wrap it as observable since unlike map, catchError don't wrap it as an observable automatically
-          return of(new AuthActions.LoginFail(errorMessage));
+          return handleError(errorRes);
         }));
     })
   );
@@ -75,7 +102,7 @@ export class AuthEffects {
   // normally Effect will dispatch an action, so in this case where we don't need to dispatch an action, we explicly tell Angular this Effect won't dispatch an action
   @Effect({ dispatch: false })
   authSuccess = this.actions$.pipe(
-    ofType(AuthActions.LOGIN), // upon success login
+    ofType(AuthActions.AUTHENTICATE_SUCCESS), // upon success login
     tap(() => {
       this.router.navigate(['/']);
     })
