@@ -103,9 +103,8 @@ export class AuthService {
 
   logout() {
     // this.user.next(null);
-    this.store.dispatch(new AuthActions.Logout());
 
-    this.router.navigate(['/auth']);
+    // this.router.navigate(['/auth']);
     localStorage.removeItem('userData');
 
     if (this.tokenExpirationTimer) {
@@ -122,54 +121,54 @@ export class AuthService {
     }, expirationDuration);
   }
 
-  private handleAuthentication(email: string, localId: string, idToken: string, expiresIn: number) {
-    const expirationDate = new Date(new Date().getTime() + expiresIn * 1000);
-    const user = new User(
-      email,
-      localId,
-      idToken,
-      expirationDate
-    );
+  // private handleAuthentication(email: string, localId: string, idToken: string, expiresIn: number) {
+  //   const expirationDate = new Date(new Date().getTime() + expiresIn * 1000);
+  //   const user = new User(
+  //     email,
+  //     localId,
+  //     idToken,
+  //     expirationDate
+  //   );
 
-    // alert the app there is a value or state change of user
-    // this.user.next(user);
-    this.store.dispatch(new AuthActions.AuthenticateSuccess({
-      email: email,
-      userId: localId,
-      token: idToken,
-      expirationDate: expirationDate
-    }));
+  //   // alert the app there is a value or state change of user
+  //   // this.user.next(user);
+  //   this.store.dispatch(new AuthActions.AuthenticateSuccess({
+  //     email: email,
+  //     userId: localId,
+  //     token: idToken,
+  //     expirationDate: expirationDate
+  //   }));
 
-    this.autoLogout(expiresIn * 1000);
-    localStorage.setItem('userData', JSON.stringify(user)); // side effect
-  }
+  //   this.autoLogout(expiresIn * 1000);
+  //   localStorage.setItem('userData', JSON.stringify(user)); // side effect
+  // }
 
-  private handleError(errorRes: HttpErrorResponse) {
-    console.log(errorRes);
-    let errorMessage = 'An unknown error occurred!';
-    if (!errorRes.error || !errorRes.error.error) {
-      return throwError(errorMessage);
-    }
+  // private handleError(errorRes: HttpErrorResponse) {
+  //   console.log(errorRes);
+  //   let errorMessage = 'An unknown error occurred!';
+  //   if (!errorRes.error || !errorRes.error.error) {
+  //     return throwError(errorMessage);
+  //   }
 
-    if (errorRes.error.error.message.startsWith('TOO_MANY_ATTEMPTS_TRY_LATER')) {
-      errorMessage = 'Too many attempts, try later';
-    }
+  //   if (errorRes.error.error.message.startsWith('TOO_MANY_ATTEMPTS_TRY_LATER')) {
+  //     errorMessage = 'Too many attempts, try later';
+  //   }
 
-    switch (errorRes.error.error.message) {
-      case 'EMAIL_EXISTS':
-        errorMessage = 'This email exists already';
-        break;
-      case 'EMAIL_NOT_FOUND':
-        errorMessage = 'This email does not exist';
-        break;
-      case 'INVALID_PASSWORD':
-        errorMessage = 'This password is not correct';
-        break;
+  //   switch (errorRes.error.error.message) {
+  //     case 'EMAIL_EXISTS':
+  //       errorMessage = 'This email exists already';
+  //       break;
+  //     case 'EMAIL_NOT_FOUND':
+  //       errorMessage = 'This email does not exist';
+  //       break;
+  //     case 'INVALID_PASSWORD':
+  //       errorMessage = 'This password is not correct';
+  //       break;
 
-      case 'USER_DISABLED':
-        errorMessage = 'Account disabled';
-    }
+  //     case 'USER_DISABLED':
+  //       errorMessage = 'Account disabled';
+  //   }
 
-    return throwError(errorMessage);
-  }
+  //   return throwError(errorMessage);
+  // }
 }

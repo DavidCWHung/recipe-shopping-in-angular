@@ -101,10 +101,18 @@ export class AuthEffects {
 
   // normally Effect will dispatch an action, so in this case where we don't need to dispatch an action, we explicly tell Angular this Effect won't dispatch an action
   @Effect({ dispatch: false })
-  authSuccess = this.actions$.pipe(
+  authRedirect = this.actions$.pipe(
     ofType(AuthActions.AUTHENTICATE_SUCCESS), // upon success login
     tap(() => {
       this.router.navigate(['/']);
+    })
+  );
+
+  @Effect({ dispatch: false })
+  authLogout = this.actions$.pipe(
+    ofType(AuthActions.LOGOUT),
+    tap(() => {
+      this.router.navigate(['/auth']);
     })
   );
 
