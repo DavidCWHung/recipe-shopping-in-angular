@@ -13,23 +13,23 @@ export class RecipeService {
     recipesChanged = new Subject<Recipe[]>();
 
     // private recipes: Recipe[] = [
-    //     new Recipe('A Test Recipe 1', 
-    //                'This is simply a test', 
+    //     new Recipe('A Test Recipe 1',
+    //                'This is simply a test',
     //                'https://upload.wikimedia.org/wikipedia/commons/3/39/Recipe.jpg',
     //                [
     //                 new Ingredient('Bun', 2),
     //                 new Ingredient('Egg', 2)
     //                ]),
-    //     new Recipe('A Test Recipe 2', 
-    //                'This is simply a test', 
+    //     new Recipe('A Test Recipe 2',
+    //                'This is simply a test',
     //                'https://upload.wikimedia.org/wikipedia/commons/3/39/Recipe.jpg',
     //                [
-    //                 new Ingredient('Beef', 1.5),
+    //                 new Ingredient('Beef', 3),
     //                 new Ingredient('Bread', 1)
     //                ])
-    // ];    
+    // ];
 
-    private recipes: Recipe[] = []; 
+    private recipes: Recipe[] = [];
 
     constructor(private router: Router,
                 private store: Store<fromApp.AppState>) {} // even though you don't select from the store, should provide what inside the store as a good practice <>
