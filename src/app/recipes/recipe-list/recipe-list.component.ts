@@ -3,7 +3,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { map, Subscription } from 'rxjs';
 import { Recipe } from '../recipe.model';
-import { RecipeService } from '../recipe.service';
 import * as fromApp from '../../store/app.reducer';
 
 @Component({
