@@ -25,3 +25,16 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
+## Deployment
+
+This project has been deployed and hosted on Firebase at https://ng-course-recipe-book-abbe1.web.app/auth for demo purpose.
+
+
+<img width="1771" alt="login" src="https://user-images.githubusercontent.com/76052863/186024345-55e1dbcc-854b-4adf-8511-43ef683797b9.png">
+
+
+<img width="1774" alt="recipes" src="https://user-images.githubusercontent.com/76052863/186024362-4c716603-7dac-4270-a04b-30cb986fcb2f.png">
+
+
+<img width="1779" alt="shopping-list" src="https://user-images.githubusercontent.com/76052863/186024371-6477581b-4b19-410a-baee-a521720c620b.png">
